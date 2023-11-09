@@ -18,3 +18,40 @@ frm.set_value('total', total_amount);
 refresh_field('total');
     }
 });
+
+
+
+
+
+frappe.ui.form.on("Sales Order Item", {
+    item_code: function(frm, cdt, cdn) {
+       var d = locals[cdt][cdn];
+        qty_reserved(frm, cdt, cdn);
+    },
+     setup: function(frm, cdt, cdn) {
+        var d = locals[cdt][cdn];
+        qty_reserved(frm, cdt, cdn);
+    },
+ 
+    projected_qty: function(frm, cdt, cdn) {
+        var d = locals[cdt][cdn];
+        qty_reserved(frm, cdt, cdn);
+    },
+    
+    actual_qty: function(frm, cdt, cdn) {
+      var d = locals[cdt][cdn];
+        qty_reserved(frm, cdt, cdn);
+    }
+
+});
+
+
+ function qty_reserved(frm, cdt, cdn) {
+     var d = locals[cdt][cdn];
+    
+    //   var total=d.projected_qty-d.actual_qty;
+//       frappe.model.set_value(d.doctype, d.name, 'reserved_qty_new', d.projected_qty - d.actual_qty);
+    frappe.model.set_value(d.doctype, d.name, 'reserved_qty_new', d.projected_qty+d.actual_qty);
+    refresh_field('reserved_qty_new')
+        
+     }
