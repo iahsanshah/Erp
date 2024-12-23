@@ -1,0 +1,22 @@
+SELECT
+   "236(1)(a)/2" AS "Payment Section:Link/Journal Entry",
+    COALESCE(jvc.tax_id, '') AS "TaxPayer_NTN",
+   COALESCE( jvc.tax_id, '') AS "TaxPayer_CNIC",
+    COALESCE(jvc.party, '')  AS "TaxPayer_Name",
+  jvc.party AS "TaxPayer_City",
+  COALESCE(jvc.party, '')  AS "TaxPayer_Address",
+   COALESCE(jvc.party, '') AS "TaxPayer_Status",
+ COALESCE(jvc.party, '') AS "TaxPayer_Business_Name",
+    jvc.debit_in_account_currency AS "Taxable_Amount",
+  ifnull((select sum(credit_in_account_currency) from `tabJournal Entry Account` where parent=jv.name and account like "%%TAX%%"),0) AS "Tax_Amount"
+FROM
+    `tabJournal Entry` jv
+JOIN
+    `tabJournal Entry Account` jvc
+ON
+    jvc.parent = jv.name
+
+WHERE
+    jv.is_payroll_jv = 0 AND jv.docstatus =1 and jvc.debit > 0 and ifnull(jvc.party,'') != '' and jv.posting_date between %(from)s and %(to)s
+GROUP BY
+   jv.name, jv.total_debit, jvc.party
